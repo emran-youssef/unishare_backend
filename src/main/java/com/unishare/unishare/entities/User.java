@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -46,6 +48,20 @@ public class User {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
+    // User-listing relationship: One user owns many listings.
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
+    private List<Listing> listings = new ArrayList<>();
+
+    // User-Booking relationship: One user can make many bookings.
+    @OneToMany(mappedBy = "renter", fetch = FetchType.LAZY)
+    private List<Booking> bookings = new ArrayList<>();
+
+    @OneToMany(mappedBy = "reviewer", fetch = FetchType.LAZY)
+    private List<Review> reviewsGiven = new ArrayList<>();
+
+    @OneToMany(mappedBy = "reviewee", fetch = FetchType.LAZY)
+    private List<Review> reviewsReceived = new ArrayList<>();
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
@@ -56,5 +72,7 @@ public class User {
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
-    
+
+
+
 }

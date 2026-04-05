@@ -19,19 +19,7 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "booking_id", nullable = false)
-    private Long bookingId;
-
-    @Column(name = "reviewer_id", nullable = false)
-    private Long reviewerId;
-
-    @Column(name = "reviewee_id", nullable = false)
-    private Long revieweeId;
-
-    @Column(name = "listing_id", nullable = false)
-    private Long listingId;
-
-    @Column(name = "rating", nullable = false)
+    @Column(name = "rating", nullable = false, columnDefinition = "TINYINT")
     private Integer rating;
 
     @Column(name = "comment", columnDefinition = "TEXT")
@@ -46,6 +34,22 @@ public class Review {
 
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "booking_id", nullable = false)
+    private Booking booking;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reviewer_id", nullable = false)
+    private User reviewer;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reviewee_id", nullable = false)
+    private User reviewee;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "listing_id", nullable = false)
+    private Listing listing;
 
     @PrePersist
     protected void onCreate() {

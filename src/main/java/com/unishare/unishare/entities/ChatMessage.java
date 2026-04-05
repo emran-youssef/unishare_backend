@@ -18,15 +18,6 @@ public class ChatMessage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "sender_id", nullable = false)
-    private Long senderId;
-
-    @Column(name = "receiver_id", nullable = false)
-    private Long receiverId;
-
-    @Column(name = "listing_id", nullable = false)
-    private Long listingId;
-
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
 
@@ -36,6 +27,20 @@ public class ChatMessage {
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sender_id")
+    private User sender;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "receiver_id")
+    private User reciever;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "listing_id")
+    private Listing listing;
+
+
 
     @PrePersist
     protected void onCreate() {

@@ -8,6 +8,8 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "listings")
@@ -17,12 +19,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class Listing {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
 
-    @Column(name = "owner_id", nullable = false)
-    private Long ownerId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(name = "title", nullable = false, length = 200)
     private String title;
@@ -51,6 +51,24 @@ public class Listing {
 
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
+
+
+    // User-listing relationship: user can make many listing
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id", nullable = false)
+    private User owner;
+
+    // Booking-listing Relationship: One listing can have many bookings.
+    @OneToMany(mappedBy = "listing",fetch = FetchType.LAZY)
+    private List<Booking> booking = new ArrayList<>();
+
+    // listing-ListingImage Relationship: One listing can have many images, deleting one listing delete its images
+    @OneToMany(mappedBy = "listing", cascade = CascadeType.ALL,
+                orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<ListingImage> listingImages = new ArrayList<>();
+
+
+
 
     @PrePersist
     protected void onCreate() {

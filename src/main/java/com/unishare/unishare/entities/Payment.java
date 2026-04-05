@@ -20,9 +20,6 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "booking_id", nullable = false, unique = true)
-    private Long bookingId;
-
     @Column(name = "amount", nullable = false, precision = 10, scale = 2)
     private BigDecimal amount;
 
@@ -45,6 +42,11 @@ public class Payment {
 
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
+
+    // Booking-Payment Relationship: one booking has exactly one payment
+    @OneToOne
+    @JoinColumn(name = "booking_id", nullable = false, unique = true)
+    private Booking booking;
 
     @PrePersist
     protected void onCreate() {
