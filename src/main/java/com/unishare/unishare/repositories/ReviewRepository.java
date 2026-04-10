@@ -4,10 +4,12 @@ import com.unishare.unishare.entities.Review;
 import com.unishare.unishare.enums.ReviewType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     //check all reviews for a listing, used ont the listing details page
@@ -20,6 +22,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     List<Review> findByBookingIdAndType(Long bookingId, ReviewType type);
 
     // calculate the average star rating for a listing — shown on listing cards and detail page
-    @Query("SELECT AVG(r.rating) FROM Review WHERE r.listing.id = :listingId")
+    @Query("SELECT AVG(r.rating) FROM Review r WHERE r.listing.id = :listingId")
     Optional<Double> findAvgRatingByListingId(Long ListingId);
 }
