@@ -12,9 +12,8 @@ import java.util.List;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
-    List<Booking> findByRenterId(Long renterId);
-
-    List<Booking> findByListingId(Long listingId);
+    List<Booking> findByRenter_Id(Long renterId);
+    List<Booking> findByListing_Id(Long listingId);
 
     // overlap detection:
 
