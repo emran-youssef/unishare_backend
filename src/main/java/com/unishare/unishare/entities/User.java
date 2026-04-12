@@ -23,9 +23,6 @@ public class User {
     @Column(name = "full_name", nullable = false, length = 100)
     private String fullName;
 
-    @Column(name = "email", nullable = false, unique = true, length = 150)
-    private String email;
-
     @Column(name = "university_email", nullable = false, unique = true, length = 150)
     private String universityEmail;
 
@@ -47,6 +44,9 @@ public class User {
 
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
+
+
+
 
     // User-listing relationship: One user owns many listings.
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)

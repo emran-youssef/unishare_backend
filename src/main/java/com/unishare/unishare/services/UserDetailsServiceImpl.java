@@ -17,13 +17,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        com.unishare.unishare.entities.User user = userRepository.findByEmail(email)
+    public UserDetails loadUserByUsername(String uniEmail) throws UsernameNotFoundException {
+       var user = userRepository.findByUniversityEmail(uniEmail)
                 .orElseThrow(() -> new UsernameNotFoundException(
-                        "User not found with email: " + email));
+                        "User not found with uniEmail: " + uniEmail));
 
         return new User(
-                user.getEmail(),
+                user.getUniversityEmail(),
                 user.getPasswordHash(),
                 List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()))
         );

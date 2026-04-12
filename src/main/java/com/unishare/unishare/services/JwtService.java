@@ -26,7 +26,7 @@ public class JwtService {
 
     public String generateToken(User user) {
         return Jwts.builder()
-                .subject(user.getEmail())
+                .subject(user.getUniversityEmail())
                 .claim("userId", user.getId())
                 .claim("role", user.getRole().name())
                 .issuedAt(new Date())
@@ -44,7 +44,7 @@ public class JwtService {
         }
     }
 
-    public String extractEmail(String token) {
+    public String extractUniEmail(String token) {
         return parseClaims(token).getSubject();
     }
 
