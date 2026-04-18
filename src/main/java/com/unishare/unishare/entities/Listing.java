@@ -60,11 +60,13 @@ public class Listing {
 
     // Booking-listing Relationship: One listing can have many bookings.
     @OneToMany(mappedBy = "listing",fetch = FetchType.LAZY)
+    @Builder.Default
     private List<Booking> booking = new ArrayList<>();
 
     // listing-ListingImage Relationship: One listing can have many images, deleting one listing delete its images
     @OneToMany(mappedBy = "listing", cascade = CascadeType.ALL,
                 orphanRemoval = true, fetch = FetchType.LAZY)
+    @Builder.Default
     private List<ListingImage> listingImages = new ArrayList<>();
 
 

@@ -50,16 +50,20 @@ public class User {
 
     // User-listing relationship: One user owns many listings.
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY)
+    @Builder.Default
     private List<Listing> listings = new ArrayList<>();
 
     // User-Booking relationship: One user can make many bookings.
     @OneToMany(mappedBy = "renter", fetch = FetchType.LAZY)
+    @Builder.Default
     private List<Booking> bookings = new ArrayList<>();
 
     @OneToMany(mappedBy = "reviewer", fetch = FetchType.LAZY)
+    @Builder.Default
     private List<Review> reviewsGiven = new ArrayList<>();
 
     @OneToMany(mappedBy = "reviewee", fetch = FetchType.LAZY)
+    @Builder.Default
     private List<Review> reviewsReceived = new ArrayList<>();
 
     @PrePersist

@@ -55,6 +55,7 @@ public class Booking {
     private Payment payment;
 
     @OneToMany(mappedBy = "booking", fetch = FetchType.LAZY)
+    @Builder.Default
     private List<Review> reviews = new ArrayList<>();
 
     //One meetup location can be used in many bookings.
