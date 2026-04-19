@@ -4,7 +4,7 @@ package com.unishare.unishare.services;
 import com.unishare.unishare.dtos.auth.JwtResponse;
 import com.unishare.unishare.dtos.auth.LoginRequest;
 import com.unishare.unishare.dtos.auth.RegisterRequest;
-import com.unishare.unishare.exceptions.EmailAlreadyExistsException;
+import com.unishare.unishare.exceptions.User.EmailAlreadyExistsException;
 import com.unishare.unishare.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;

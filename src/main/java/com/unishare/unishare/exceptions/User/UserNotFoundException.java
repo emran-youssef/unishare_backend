@@ -1,4 +1,4 @@
-package com.unishare.unishare.exceptions;
+package com.unishare.unishare.exceptions.User;
 
 public class UserNotFoundException extends RuntimeException{
 

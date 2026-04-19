@@ -1,5 +1,5 @@
 // Thrown when a registration attempt uses a university email that already exists in the system
-package com.unishare.unishare.exceptions;
+package com.unishare.unishare.exceptions.User;
 
 
 public class EmailAlreadyExistsException extends RuntimeException {

@@ -1,4 +1,4 @@
-package com.unishare.unishare.exceptions;
+package com.unishare.unishare.exceptions.User;
 
 import com.unishare.unishare.dtos.auth.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public class UserGlobalExceptionHandler {
 
     // Catches @Valid failures and returns a 400 with a map of each failed field and its error message
     @ExceptionHandler(MethodArgumentNotValidException.class)

@@ -7,7 +7,7 @@ import com.unishare.unishare.dtos.user.UpdateProfileRequest;
 import com.unishare.unishare.dtos.user.UserDto;
 import com.unishare.unishare.entities.User;
 import com.unishare.unishare.enums.Role;
-import com.unishare.unishare.exceptions.UserNotFoundException;
+import com.unishare.unishare.exceptions.User.UserNotFoundException;
 import com.unishare.unishare.mappers.UserMapper;
 import com.unishare.unishare.repositories.UserRepository;
 import lombok.AllArgsConstructor;
@@ -90,6 +90,12 @@ public class UserService {
     public Page<UserDto> getAllUsers(Pageable pageable) {
         return userRepository.findAll(pageable)
                 .map(userMapper::toDto);
+    }
+
+    public Long getIdByEmail(String email) {
+        return userRepository.findByUniversityEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + email))
+                .getId();
     }
 
 

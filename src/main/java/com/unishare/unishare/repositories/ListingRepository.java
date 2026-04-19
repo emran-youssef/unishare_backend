@@ -17,8 +17,9 @@ import java.util.List;
 
 @Repository
 public interface ListingRepository extends JpaRepository<Listing,Long> {
+
     // owner is the object field — Spring Data traverses owner.id via underscore
-    List<Listing> findByOwner_Id(Long ownerId);
+    Page<Listing> findByOwner_Id(Long ownerId, Pageable pageable);
 
     @Query("""
         SELECT l FROM Listing l
@@ -36,4 +37,6 @@ public interface ListingRepository extends JpaRepository<Listing,Long> {
             @Param("maxPrice") BigDecimal maxPrice,
             Pageable pageable
     );
+
+
 }
