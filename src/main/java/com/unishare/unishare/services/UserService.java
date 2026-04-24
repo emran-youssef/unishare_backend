@@ -92,15 +92,17 @@ public class UserService {
                 .map(userMapper::toDto);
     }
 
-    public Long getIdByEmail(String email) {
-        return userRepository.findByUniversityEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found with email: " + email))
+    public Long getIdByEmail(String universityEmail) {
+        return userRepository.findByUniversityEmail(universityEmail)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + universityEmail))
                 .getId();
+    }
+
     }
 
 
 
 
 
-}
+
 

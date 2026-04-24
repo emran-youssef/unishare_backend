@@ -1,6 +1,7 @@
 package com.unishare.unishare.exceptions.Listing;
 
 import com.unishare.unishare.dtos.auth.ErrorResponse;
+import com.unishare.unishare.exceptions.UnauthorizedException.UnauthorizedActionException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

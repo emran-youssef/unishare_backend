@@ -36,7 +36,6 @@ public class Booking {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    @Builder.Default
     private BookingStatus status = BookingStatus.PENDING;
 
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -55,7 +54,6 @@ public class Booking {
     private Payment payment;
 
     @OneToMany(mappedBy = "booking", fetch = FetchType.LAZY)
-    @Builder.Default
     private List<Review> reviews = new ArrayList<>();
 
     //One meetup location can be used in many bookings.

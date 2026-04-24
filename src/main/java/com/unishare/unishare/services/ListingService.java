@@ -8,7 +8,7 @@ import com.unishare.unishare.enums.ItemCondition;
 import com.unishare.unishare.enums.ListingCategory;
 import com.unishare.unishare.enums.ListingStatus;
 import com.unishare.unishare.exceptions.Listing.ListingNotFoundException;
-import com.unishare.unishare.exceptions.Listing.UnauthorizedActionException;
+import com.unishare.unishare.exceptions.UnauthorizedException.UnauthorizedActionException;
 import com.unishare.unishare.mappers.ListingMapper;
 import com.unishare.unishare.repositories.ListingRepository;
 import com.unishare.unishare.repositories.UserRepository;
