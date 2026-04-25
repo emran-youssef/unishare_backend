@@ -4,6 +4,7 @@ import com.unishare.unishare.dtos.auth.ErrorResponse;
 import com.unishare.unishare.exceptions.Booking.BookingNotFoundException;
 import com.unishare.unishare.exceptions.Booking.BookingOverlapException;
 import com.unishare.unishare.exceptions.Listing.ListingNotFoundException;
+import com.unishare.unishare.exceptions.Payment.PaymentAlreadyExistsException;
 import com.unishare.unishare.exceptions.UnauthorizedException.UnauthorizedActionException;
 import com.unishare.unishare.exceptions.User.EmailAlreadyExistsException;
 import com.unishare.unishare.exceptions.User.UserNotFoundException;
@@ -57,6 +58,22 @@ public class GlobalExceptionHandler {
                         .timestamp(LocalDateTime.now())
                         .status(400)
                         .error("Bad Request")
+                        .message(ex.getMessage())
+                        .path(request.getRequestURI())
+                        .build()
+        );
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalState(
+            IllegalStateException ex,
+            HttpServletRequest request) {
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                ErrorResponse.builder()
+                        .timestamp(LocalDateTime.now())
+                        .status(409)
+                        .error("Conflict")
                         .message(ex.getMessage())
                         .path(request.getRequestURI())
                         .build()
@@ -197,5 +214,22 @@ public class GlobalExceptionHandler {
                         .path(request.getRequestURI())
                         .build()
         );
+    }
+
+    @ExceptionHandler(PaymentAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handlePaymentAlreadyExists(
+            PaymentAlreadyExistsException ex,
+            HttpServletRequest request) {
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                ErrorResponse.builder()
+                        .timestamp(LocalDateTime.now())
+                        .status(409)
+                        .error("Conflict")
+                        .message(ex.getMessage())
+                        .path(request.getRequestURI())
+                        .build()
+        );
+
     }
 }
