@@ -5,6 +5,7 @@ import com.unishare.unishare.exceptions.Booking.BookingNotFoundException;
 import com.unishare.unishare.exceptions.Booking.BookingOverlapException;
 import com.unishare.unishare.exceptions.Listing.ListingNotFoundException;
 import com.unishare.unishare.exceptions.Payment.PaymentAlreadyExistsException;
+import com.unishare.unishare.exceptions.Review.ReviewNotAllowedException;
 import com.unishare.unishare.exceptions.UnauthorizedException.UnauthorizedActionException;
 import com.unishare.unishare.exceptions.User.EmailAlreadyExistsException;
 import com.unishare.unishare.exceptions.User.UserNotFoundException;
@@ -232,4 +233,23 @@ public class GlobalExceptionHandler {
         );
 
     }
+
+    @ExceptionHandler(ReviewNotAllowedException.class)
+    public ResponseEntity<ErrorResponse> handleReviewNotAllowedException(
+            HttpServletRequest request,
+            ReviewNotAllowedException ex){
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
+                ErrorResponse.builder()
+                        .timestamp(LocalDateTime.now())
+                        .status(422)
+                        .error("Unprocessable Entity")
+                        .message(ex.getMessage())
+                        .path(request.getRequestURI())
+                        .build()
+                );
+
+
+    }
+
 }

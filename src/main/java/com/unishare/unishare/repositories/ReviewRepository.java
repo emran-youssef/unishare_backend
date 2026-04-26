@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
-    //check all reviews for a listing, used ont the listing details page
+    //check all reviews for a listing, used on the listing details page
     List<Review> findByListingId(Long listingId);
 
     // fetch all reviews received by a user — used on the user profile page
