@@ -1,9 +1,10 @@
-package com.unishare.unishare.exceptions.handler;
+package com.unishare.unishare.exceptions.GlobalHandler;
 
 import com.unishare.unishare.dtos.auth.ErrorResponse;
 import com.unishare.unishare.exceptions.Booking.BookingNotFoundException;
 import com.unishare.unishare.exceptions.Booking.BookingOverlapException;
 import com.unishare.unishare.exceptions.Listing.ListingNotFoundException;
+import com.unishare.unishare.exceptions.MeetupLocation.MeetupLocationNotFoundException;
 import com.unishare.unishare.exceptions.Payment.PaymentAlreadyExistsException;
 import com.unishare.unishare.exceptions.Review.ReviewNotAllowedException;
 import com.unishare.unishare.exceptions.UnauthorizedException.UnauthorizedActionException;
@@ -250,6 +251,22 @@ public class GlobalExceptionHandler {
                 );
 
 
+    }
+
+    @ExceptionHandler(MeetupLocationNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleMeetupLocationNotFound(
+            MeetupLocationNotFoundException ex,
+            HttpServletRequest request) {
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                ErrorResponse.builder()
+                        .timestamp(LocalDateTime.now())
+                        .status(404)
+                        .error("Not Found")
+                        .message(ex.getMessage())
+                        .path(request.getRequestURI())
+                        .build()
+        );
     }
 
 }

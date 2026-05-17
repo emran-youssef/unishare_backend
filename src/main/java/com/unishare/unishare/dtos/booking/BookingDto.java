@@ -1,6 +1,7 @@
 package com.unishare.unishare.dtos.booking;
 
 import com.unishare.unishare.dtos.listing.ListingDto;
+import com.unishare.unishare.dtos.meetUpLocation.MeetUpLocationDto;
 import com.unishare.unishare.dtos.user.UserDto;
 import com.unishare.unishare.enums.BookingStatus;
 import lombok.Data;
@@ -19,6 +20,7 @@ public class BookingDto {
     private BookingStatus status;
     private ListingDto listing;
     private UserDto renter;
+    private MeetUpLocationDto meetupLocation;
     private LocalDateTime createdAt;
 
 }

@@ -7,11 +7,13 @@ import com.unishare.unishare.enums.BookingStatus;
 import com.unishare.unishare.exceptions.Booking.BookingNotFoundException;
 import com.unishare.unishare.exceptions.Booking.BookingOverlapException;
 import com.unishare.unishare.exceptions.Listing.ListingNotFoundException;
+import com.unishare.unishare.exceptions.MeetupLocation.MeetupLocationNotFoundException;
 import com.unishare.unishare.exceptions.UnauthorizedException.UnauthorizedActionException;
 import com.unishare.unishare.exceptions.User.UserNotFoundException;
 import com.unishare.unishare.mappers.BookingMapper;
 import com.unishare.unishare.repositories.BookingRepository;
 import com.unishare.unishare.repositories.ListingRepository;
+import com.unishare.unishare.repositories.MeetupLocationRepository;
 import com.unishare.unishare.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -31,6 +33,7 @@ public class BookingService {
     private BookingMapper bookingMapper;
     private final UserRepository userRepository;
     private final ListingRepository listingRepository;
+    private final MeetupLocationRepository meetupLocationRepository;
 
 
     //create booking
@@ -155,7 +158,25 @@ public class BookingService {
         return bookingMapper.toBookingDto(bookingRepository.save(booking));
     }
 
+    // let the owner decides which meet up location for this booking
+    public BookingDto attachMeetupLocation(Long bookingId, Long locationId, Long requestingUserID){
+        var booking = getBooking(bookingId);
 
+        boolean isOwner = booking.getListing().getOwner().getId().equals(requestingUserID);
+        if(!isOwner)
+            throw new UnauthorizedActionException("Only the listing owner can set the meetup location");
+
+        if (booking.getStatus() != BookingStatus.CONFIRMED)
+            throw new UnauthorizedActionException("Can only set meetup location on a CONFIRMED booking");
+
+        var location = meetupLocationRepository.findById(locationId)
+                .orElseThrow(() -> new MeetupLocationNotFoundException(locationId));
+
+        booking.setMeetupLocation(location);
+        return bookingMapper.toBookingDto(bookingRepository.save(booking));
+    }
+
+    // helper
     private Booking getBooking(long id){
         return bookingRepository.findById(id)
                 .orElseThrow(() -> new BookingNotFoundException(id));

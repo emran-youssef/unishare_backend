@@ -2,6 +2,7 @@ package com.unishare.unishare.controllers;
 
 import com.unishare.unishare.dtos.booking.BookingDto;
 import com.unishare.unishare.dtos.booking.CreateBookingRequest;
+import com.unishare.unishare.repositories.UserRepository;
 import com.unishare.unishare.services.BookingService;
 import com.unishare.unishare.services.UserService;
 import jakarta.validation.Valid;
@@ -22,6 +23,7 @@ public class BookingController {
 
     private final BookingService bookingService;
     private final UserService userService;
+    private final UserRepository userRepository;
 
     @PostMapping("/create")
     public ResponseEntity<BookingDto> createBooking(
@@ -45,7 +47,7 @@ public class BookingController {
     public ResponseEntity<BookingDto> getBookingById(
             @PathVariable Long id,
             @AuthenticationPrincipal UserDetails userDetails) {
-        Long userId = userService.getIdByEmail(userDetails.getUsername());
+        Long userId = userService.getIdByEmail(userDetails.getUsername());   //Username = uniEmail
         return ResponseEntity.ok(bookingService.getBookingById(id, userId));
     }
 
@@ -53,7 +55,7 @@ public class BookingController {
     public ResponseEntity<BookingDto> cancelBooking(
             @PathVariable Long id,
             @AuthenticationPrincipal UserDetails userDetails) {
-        Long userId = userService.getIdByEmail(userDetails.getUsername());
+        Long userId = userService.getIdByEmail(userDetails.getUsername());   //Username = uniEmail
         return ResponseEntity.ok(bookingService.cancelBooking(id, userId));
     }
 
@@ -61,7 +63,7 @@ public class BookingController {
     public ResponseEntity<BookingDto> confirmBooking(
             @PathVariable Long id,
             @AuthenticationPrincipal UserDetails userDetails) {
-        Long userId = userService.getIdByEmail(userDetails.getUsername());
+        Long userId = userService.getIdByEmail(userDetails.getUsername());   //Username = uniEmail
         return ResponseEntity.ok(bookingService.confirmBooking(id, userId));
     }
 
@@ -70,8 +72,20 @@ public class BookingController {
             @PathVariable Long id,
             @AuthenticationPrincipal UserDetails userDetails)
     {
-        Long userId = userService.getIdByEmail(userDetails.getUsername());
+        Long userId = userService.getIdByEmail(userDetails.getUsername());   //Username = uniEmail
         return ResponseEntity.ok(bookingService.completeBooking(id, userId));
+    }
+
+
+    @PutMapping("/{id}/meetup")
+    public ResponseEntity<BookingDto> attachMeetupLocation(
+            @PathVariable Long id,
+            @RequestParam Long locationId,
+            @AuthenticationPrincipal UserDetails userDetails)
+    {
+        Long userId = userService.getIdByEmail(userDetails.getUsername());   //Username = uniEmail
+        return ResponseEntity.ok(bookingService.attachMeetupLocation(id, locationId, userId));
+
     }
 
 
