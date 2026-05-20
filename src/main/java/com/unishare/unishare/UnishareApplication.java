@@ -8,6 +8,7 @@ public class UnishareApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(UnishareApplication.class, args);
+
 	}
 
 }
