@@ -53,11 +53,6 @@ public class UserController {
         return ResponseEntity.ok(userService.getPublicProfile(id));
     }
 
-    @GetMapping("/all")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Page<UserDto>> getAllUsers(Pageable pageable){
-        return ResponseEntity.ok(userService.getAllUsers(pageable));
-    }
 
 
 

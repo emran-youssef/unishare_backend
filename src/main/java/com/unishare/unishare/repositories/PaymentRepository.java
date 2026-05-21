@@ -2,8 +2,10 @@ package com.unishare.unishare.repositories;
 
 import com.unishare.unishare.entities.Payment;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 @Repository
@@ -14,6 +16,10 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
     //used before creating a payment to prevent a duplicate, A booking can have only one payment
     boolean existsByBooking_Id(Long bookingId);
+
+    @Query("SELECT COALESCE(SUM(p.amount), 0) FROM Payment p WHERE p.status = 'PAID'")
+    BigDecimal sumPaidAmount();
+
 
 
 }

@@ -38,5 +38,7 @@ public interface ListingRepository extends JpaRepository<Listing,Long> {
             Pageable pageable
     );
 
+    long countByStatus(ListingStatus status);
+
 
 }
