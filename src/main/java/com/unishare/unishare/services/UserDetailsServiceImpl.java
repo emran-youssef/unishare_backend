@@ -2,6 +2,7 @@ package com.unishare.unishare.services;
 
 import com.unishare.unishare.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,6 +22,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
        var user = userRepository.findByUniversityEmail(uniEmail)
                 .orElseThrow(() -> new UsernameNotFoundException(
                         "User not found with uniEmail: " + uniEmail));
+
+       if(!user.getIsActive())
+           throw new DisabledException("This Account has been deactivated");
 
         return new User(
                 user.getUniversityEmail(),
