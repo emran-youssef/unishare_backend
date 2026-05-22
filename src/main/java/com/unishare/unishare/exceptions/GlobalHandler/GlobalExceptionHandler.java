@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -95,6 +96,23 @@ public class GlobalExceptionHandler {
                         .status(401)
                         .error("Unauthorized")
                         .message("Invalid university email or password")
+                        .path(request.getRequestURI())
+                        .build()
+        );
+    }
+
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleUsernameNotFound(
+            UsernameNotFoundException ex,
+            HttpServletRequest request) {
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                ErrorResponse.builder()
+                        .timestamp(LocalDateTime.now())
+                        .status(401)
+                        .error("Unauthorized")
+                        .message("User account not found")
                         .path(request.getRequestURI())
                         .build()
         );
@@ -241,7 +259,7 @@ public class GlobalExceptionHandler {
             HttpServletRequest request,
             ReviewNotAllowedException ex){
 
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_CONTENT).body(
                 ErrorResponse.builder()
                         .timestamp(LocalDateTime.now())
                         .status(422)

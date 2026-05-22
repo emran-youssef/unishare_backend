@@ -5,6 +5,7 @@ import com.unishare.unishare.dtos.auth.JwtResponse;
 import com.unishare.unishare.dtos.auth.LoginRequest;
 import com.unishare.unishare.dtos.auth.RegisterRequest;
 import com.unishare.unishare.exceptions.User.EmailAlreadyExistsException;
+import com.unishare.unishare.exceptions.User.UserNotFoundException;
 import com.unishare.unishare.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -56,7 +57,7 @@ public class AuthService {
 
         var user = userRepository.
                 findByUniversityEmail(request.getUniversityEmail())
-                        .orElseThrow(()-> new RuntimeException("User not found!"));
+                    .orElseThrow(() -> new UserNotFoundException("User not found: " + request.getUniversityEmail()));
 
         String token = jwtService.generateToken(user);
 

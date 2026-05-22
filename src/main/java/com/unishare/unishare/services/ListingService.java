@@ -9,6 +9,7 @@ import com.unishare.unishare.enums.ListingCategory;
 import com.unishare.unishare.enums.ListingStatus;
 import com.unishare.unishare.exceptions.Listing.ListingNotFoundException;
 import com.unishare.unishare.exceptions.UnauthorizedException.UnauthorizedActionException;
+import com.unishare.unishare.exceptions.User.UserNotFoundException;
 import com.unishare.unishare.mappers.ListingMapper;
 import com.unishare.unishare.repositories.ListingRepository;
 import com.unishare.unishare.repositories.UserRepository;
@@ -34,7 +35,7 @@ public class ListingService {
     )
     {
         var owner = userRepository.findById(ownerId)
-                .orElseThrow(()-> new RuntimeException("User not found"));
+                .orElseThrow(()-> new UserNotFoundException("User not found"));
 
         var listing = Listing.builder()
                 .owner(owner)
