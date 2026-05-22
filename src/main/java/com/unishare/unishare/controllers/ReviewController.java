@@ -3,6 +3,7 @@ package com.unishare.unishare.controllers;
 import com.unishare.unishare.dtos.review.CreateReviewRequest;
 import com.unishare.unishare.dtos.review.ReviewDto;
 import com.unishare.unishare.services.ReviewService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/reviews")
+@Tag(name = "Reviews", description = "Submit and retrieve reviews")
 public class ReviewController {
 
     private final ReviewService reviewService;

@@ -6,6 +6,7 @@ import com.unishare.unishare.dtos.user.PublicUserDto;
 import com.unishare.unishare.dtos.user.UpdateProfileRequest;
 import com.unishare.unishare.dtos.user.UserDto;
 import com.unishare.unishare.services.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/users")
+@Tag(name = "Users", description = "Profile management")
 public class UserController {
     private final UserService userService;
 

@@ -3,6 +3,7 @@ package com.unishare.unishare.controllers;
 import com.unishare.unishare.dtos.payment.PaymentDto;
 import com.unishare.unishare.dtos.payment.ProcessPaymentRequest;
 import com.unishare.unishare.services.PaymentService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/payments")
+@Tag(name = "Payments", description = "Process and retrieve payments")
 public class PaymentController {
 
     private final PaymentService paymentService;

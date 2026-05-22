@@ -4,6 +4,7 @@ import com.unishare.unishare.dtos.chat.ChatMessageDto;
 import com.unishare.unishare.dtos.chat.SendMessageRequest;
 import com.unishare.unishare.dtos.listing.ListingDto;
 import com.unishare.unishare.services.ChatService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/chat")
+@Tag(name = "Chat", description = "Messaging between users about a listing")
 public class ChatController {
 
     private final ChatService chatService;

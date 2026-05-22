@@ -4,6 +4,7 @@ import com.unishare.unishare.dtos.auth.JwtResponse;
 import com.unishare.unishare.dtos.auth.LoginRequest;
 import com.unishare.unishare.dtos.auth.RegisterRequest;
 import com.unishare.unishare.services.AuthService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/auth")
 @AllArgsConstructor
+@Tag(name = "Authentication", description = "Register and login")
 public class AuthController {
 
     private AuthService authService;

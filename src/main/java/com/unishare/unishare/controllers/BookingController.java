@@ -5,6 +5,7 @@ import com.unishare.unishare.dtos.booking.CreateBookingRequest;
 import com.unishare.unishare.repositories.UserRepository;
 import com.unishare.unishare.services.BookingService;
 import com.unishare.unishare.services.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,7 +19,7 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/bookings")
-
+@Tag(name = "Bookings", description = "Create and manage bookings")
 public class BookingController {
 
     private final BookingService bookingService;

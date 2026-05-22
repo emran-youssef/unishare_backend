@@ -8,6 +8,7 @@ import com.unishare.unishare.enums.ListingCategory;
 import com.unishare.unishare.enums.ListingStatus;
 import com.unishare.unishare.services.ListingService;
 import com.unishare.unishare.services.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -24,6 +25,7 @@ import java.math.BigDecimal;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/listing")
+@Tag(name = "Listings", description = "Create and browse rental listings")
 public class ListingController {
     private final ListingService listingService;
     private final UserService userService;

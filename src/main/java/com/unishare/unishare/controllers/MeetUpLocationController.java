@@ -2,6 +2,7 @@ package com.unishare.unishare.controllers;
 
 import com.unishare.unishare.dtos.meetUpLocation.MeetUpLocationDto;
 import com.unishare.unishare.services.MeetUpLocationService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +14,7 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/meetup-locations")
+@Tag(name = "Meetup Locations", description = "Campus handoff locations")
 public class MeetUpLocationController {
 
     private final MeetUpLocationService meetUpLocationService;
