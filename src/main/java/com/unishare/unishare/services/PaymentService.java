@@ -71,8 +71,20 @@ public class PaymentService {
 
     public PaymentDto getPaymentByBookingId(Long bookingId) {
 
+        // Verify caller is renter or owner
+        String callerEmail = SecurityContextHolder.getContext()
+                .getAuthentication().getName();
+
         Payment payment = paymentRepository.findByBooking_Id(bookingId)
                 .orElseThrow(() -> new BookingNotFoundException(bookingId));
+
+        boolean isRenter = payment.getBooking().getRenter()
+                .getUniversityEmail().equals(callerEmail);
+        boolean isOwner  = payment.getBooking().getListing().getOwner()
+                .getUniversityEmail().equals(callerEmail);
+
+        if (!isRenter && !isOwner)
+            throw new UnauthorizedActionException("You are not involved in this booking");
 
         return paymentMapper.toPaymentDto(payment);
     }

@@ -27,11 +27,8 @@ public class AuthService {
     //sign-up
     public JwtResponse register(RegisterRequest request){
 
-        if(userRepository.existsByUniversityEmail(request.getUniversityEmail())){
-            throw new EmailAlreadyExistsException(
-                    "Email already exist: "+ request.getUniversityEmail() );
-
-        }
+        if(userRepository.existsByUniversityEmail(request.getUniversityEmail()))
+            throw new EmailAlreadyExistsException("Email already exist: "+ request.getUniversityEmail());
 
         var user = userService.createUser(request);
         String token = jwtService.generateToken(user);
@@ -40,8 +37,7 @@ public class AuthService {
                 token,
                 user.getId(),
                 user.getUniversityEmail(),
-                user.getRole()
-        );
+                user.getRole());
     }
 
     //login
