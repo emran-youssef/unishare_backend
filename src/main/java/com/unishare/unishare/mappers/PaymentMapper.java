@@ -10,6 +10,5 @@ public interface PaymentMapper {
 
     // booking.id lives one level deep — MapStruct needs the explicit path
     @Mapping(source = "booking.id", target = "bookingId")
-    //@Mapping(source = "paymentMethod", target = "paymentMethod")
     PaymentDto toPaymentDto(Payment payment);
 }

@@ -46,6 +46,7 @@ public class SecurityConfig {
                                 "/api/listing/{id}",
                                 "/api/listings/*/images",
                                 "/api/reviews/listing/**",
+                                "/api/reviews/**",
                                 "/uploads/**",
                                 "/api/meetup-locations",
                                 "/swagger-ui/**",

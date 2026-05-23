@@ -44,6 +44,16 @@ public class BookingController {
         return ResponseEntity.ok(bookingService.getMyBookings(userId));
     }
 
+    @GetMapping("/incoming")
+    public ResponseEntity<List<BookingDto>> getIncomingBookings(
+            @AuthenticationPrincipal UserDetails userDetails){
+
+        Long userId = userService.getIdByEmail(userDetails.getUsername());
+        return ResponseEntity.ok(bookingService.getOwnerBookings(userId));
+
+
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<BookingDto> getBookingById(
             @PathVariable Long id,
@@ -88,6 +98,7 @@ public class BookingController {
         return ResponseEntity.ok(bookingService.attachMeetupLocation(id, locationId, userId));
 
     }
+
 
 
 }

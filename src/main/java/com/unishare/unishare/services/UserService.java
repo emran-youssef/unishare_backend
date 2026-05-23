@@ -59,7 +59,7 @@ public class UserService {
         if(request.getProfilePicture() != null) user.setProfilePicture(request.getProfilePicture());
         if(request.getPhone() != null) user.setPhone(request.getPhone());
 
-        return userMapper.toDto(user);
+        return userMapper.toDto(userRepository.save(user));
 
     }
 

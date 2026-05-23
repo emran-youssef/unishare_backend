@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,21 +21,20 @@ public class PaymentController {
 
     @PostMapping("/{bookingId}")
     public ResponseEntity<PaymentDto> processPayment(
-            @PathVariable Long bookingId,
+            Authentication authentication, @PathVariable Long bookingId,
             @Valid @RequestBody ProcessPaymentRequest request) {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(paymentService.processPayment(request, bookingId));
-
+                .body(paymentService.processPayment(authentication.getName(), request, bookingId));
     }
 
     @GetMapping("/{bookingId}")
     public ResponseEntity<PaymentDto> getPayment(
+            Authentication authentication,
             @PathVariable Long bookingId) {
 
-        return ResponseEntity.
-                ok(paymentService.getPaymentByBookingId(bookingId));
+        return ResponseEntity.ok(paymentService.getPaymentByBookingId(authentication.getName(), bookingId));
     }
 
 }

@@ -50,7 +50,6 @@ public class BookingService {
             throw new UnauthorizedActionException("You cannot book your own listing");
 
 
-
         // validate date range
         if(!request.getEndDate().isAfter(request.getStartDate()))
             throw new IllegalArgumentException("End date must be after start date");
@@ -156,6 +155,14 @@ public class BookingService {
 
         booking.setStatus(BookingStatus.COMPLETED);
         return bookingMapper.toBookingDto(bookingRepository.save(booking));
+    }
+
+    public List<BookingDto> getOwnerBookings(Long ownerId){
+        return bookingRepository.findByListing_Owner_id(ownerId)
+                .stream()
+                .map(bookingMapper::toBookingDto)
+                .toList();
+
     }
 
     // let the owner decides which meet up location for this booking

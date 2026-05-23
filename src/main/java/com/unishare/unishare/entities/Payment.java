@@ -1,5 +1,6 @@
 package com.unishare.unishare.entities;
 
+import com.unishare.unishare.enums.PaymentMethod;
 import com.unishare.unishare.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -28,11 +29,9 @@ public class Payment {
     @Builder.Default
     private PaymentStatus status = PaymentStatus.PENDING;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "payment_method", length = 50)
-    private String paymentMethod;
-
-    @Column(name = "transaction_ref", length = 200)
-    private String transactionRef;
+    private PaymentMethod paymentMethod;
 
     @Column(name = "paid_at")
     private LocalDateTime paidAt;

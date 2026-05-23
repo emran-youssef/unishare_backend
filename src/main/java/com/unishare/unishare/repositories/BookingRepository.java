@@ -34,4 +34,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     long countByStatus(BookingStatus status);
 
+    List<Booking>  findByListing_Owner_id(Long ownerId);
+
 }

@@ -84,7 +84,7 @@ public class ReviewService {
         // 9. call the helper to build the review
         var review = createReview(request, booking, reviewer, reviewee);
 
-        return reviewMapper.toReviewDto(review);
+        return reviewMapper.toReviewDto(reviewRepository.save(review));
     }
 
 

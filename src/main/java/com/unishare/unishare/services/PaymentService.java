@@ -5,6 +5,7 @@ import com.unishare.unishare.dtos.payment.ProcessPaymentRequest;
 import com.unishare.unishare.entities.Booking;
 import com.unishare.unishare.entities.Payment;
 import com.unishare.unishare.enums.BookingStatus;
+import com.unishare.unishare.enums.PaymentMethod;
 import com.unishare.unishare.enums.PaymentStatus;
 import com.unishare.unishare.exceptions.Booking.BookingNotFoundException;
 import com.unishare.unishare.exceptions.Payment.PaymentAlreadyExistsException;
@@ -27,60 +28,48 @@ public class PaymentService {
     private final PaymentMapper paymentMapper;
 
     @Transactional
-    public PaymentDto processPayment(ProcessPaymentRequest request, Long bookingId)
+    public PaymentDto processPayment(String callerEmail, ProcessPaymentRequest request, Long bookingId)
     {
-        // load the booking
+        // 1. Load the booking
         var booking = bookingRepository.findById(bookingId)
-                .orElseThrow(()-> new BookingNotFoundException(bookingId));
+                .orElseThrow(() -> new BookingNotFoundException(bookingId));
 
         // 2. Verify the caller is the renter
-        String callerEmail = SecurityContextHolder.getContext()
-                .getAuthentication().getName();
-
-        if(!booking.getRenter().getUniversityEmail().equals(callerEmail))
+        if (!booking.getRenter().getUniversityEmail().equals(callerEmail))
             throw new UnauthorizedActionException("Only the renter can pay for this booking");
 
         // 3. One payment per booking — no duplicates
-        if(paymentRepository.existsByBooking_Id(bookingId))
-            throw new PaymentAlreadyExistsException("A payment already exist for this booking: "+ bookingId);
+        if (paymentRepository.existsByBooking_Id(bookingId))
+            throw new PaymentAlreadyExistsException("A payment already exists for this booking: " + bookingId);
 
-
-        // 4. Only PENDING bookings can be paid
-        if (booking.getStatus() != BookingStatus.PENDING)
-            throw new IllegalStateException("Payment is only allowed on PENDING bookings. Current status: "
-                    + booking.getStatus());
-
+        // 4. Payment only allowed on CONFIRMED bookings
+        if (booking.getStatus() != BookingStatus.CONFIRMED)
+            throw new IllegalStateException("Payment is only allowed on CONFIRMED bookings. Current status: " + booking.getStatus());
 
         // 5. Determine payment method
-        boolean isOnline = request.getPaymentMethod()
-                .equalsIgnoreCase("ONLINE");
+        boolean isOnline = request.getPaymentMethod() == PaymentMethod.ONLINE;
 
         // 6. call the helper method createPayment tp build a payment record
         var payment = createPayment(booking, request, isOnline);
+        var saved = paymentRepository.save(payment);
 
-        // 7. Online confirms the booking immediately, Cash leaves it pending until the owner confirm it
-        if(isOnline) {
-            booking.setStatus(BookingStatus.CONFIRMED);
-            bookingRepository.save(booking);
-        }
+        // 6. Both methods complete the booking
+        booking.setStatus(BookingStatus.COMPLETED);
+        bookingRepository.save(booking);
 
-        Payment saved = paymentRepository.save(payment);
         return paymentMapper.toPaymentDto(saved);
 
     }
 
-    public PaymentDto getPaymentByBookingId(Long bookingId) {
+    public PaymentDto getPaymentByBookingId(String callerEmail, Long bookingId) {
 
-        // Verify caller is renter or owner
-        String callerEmail = SecurityContextHolder.getContext()
-                .getAuthentication().getName();
-
-        Payment payment = paymentRepository.findByBooking_Id(bookingId)
+        var payment = paymentRepository.findByBooking_Id(bookingId)
                 .orElseThrow(() -> new BookingNotFoundException(bookingId));
 
         boolean isRenter = payment.getBooking().getRenter()
                 .getUniversityEmail().equals(callerEmail);
-        boolean isOwner  = payment.getBooking().getListing().getOwner()
+
+        boolean isOwner = payment.getBooking().getListing().getOwner()
                 .getUniversityEmail().equals(callerEmail);
 
         if (!isRenter && !isOwner)
@@ -89,12 +78,12 @@ public class PaymentService {
         return paymentMapper.toPaymentDto(payment);
     }
 
+
     private Payment createPayment(Booking booking, ProcessPaymentRequest request, boolean isOnline) {
         return Payment.builder()
                 .booking(booking)
                 .amount(booking.getTotalPrice())
-                .paymentMethod(request.getPaymentMethod().toUpperCase())
-                .transactionRef(request.getTransactionRef())
+                .paymentMethod(request.getPaymentMethod())
                 .status(isOnline ? PaymentStatus.PAID : PaymentStatus.PENDING)
                 .paidAt(isOnline ? LocalDateTime.now() : null)
                 .build();
