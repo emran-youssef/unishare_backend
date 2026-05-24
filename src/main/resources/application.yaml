@@ -22,6 +22,18 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
 
+  mail:
+    host: sandbox.smtp.mailtrap.io
+    port: 2525
+    username: e4308aa54a888a
+    password: "76b3d50a3705b2"
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
 server:
   port: 8080
 
@@ -35,3 +47,5 @@ file:
 logging:
   level:
     org.springframework.security: DEBUG
+
+

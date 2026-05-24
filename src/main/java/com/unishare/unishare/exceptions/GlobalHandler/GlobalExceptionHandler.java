@@ -268,8 +268,6 @@ public class GlobalExceptionHandler {
                         .path(request.getRequestURI())
                         .build()
                 );
-
-
     }
 
     @ExceptionHandler(MeetupLocationNotFoundException.class)
