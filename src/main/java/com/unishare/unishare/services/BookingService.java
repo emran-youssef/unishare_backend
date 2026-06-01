@@ -49,11 +49,9 @@ public class BookingService {
         if(listing.getOwner().getId().equals(renterId))
             throw new UnauthorizedActionException("You cannot book your own listing");
 
-
         // validate date range
         if(!request.getEndDate().isAfter(request.getStartDate()))
             throw new IllegalArgumentException("End date must be after start date");
-
 
         // Overlap Detection - checking against confirmed booking only
         var overlapping = bookingRepository.findOverlappingBookings(
@@ -126,16 +124,15 @@ public class BookingService {
     }
 
     public BookingDto confirmBooking(Long bookingId, Long requestingUserId) {
+
         var booking = getBooking(bookingId);
 
         boolean isOwner = booking.getListing().getOwner().getId().equals(requestingUserId);
-        if (!isOwner) {
+        if (!isOwner)
             throw new UnauthorizedActionException("Only the listing owner can confirm a booking");
-        }
 
-        if (booking.getStatus() != BookingStatus.PENDING) {
+        if (booking.getStatus() != BookingStatus.PENDING)
             throw new UnauthorizedActionException("Only PENDING bookings can be confirmed");
-        }
 
         booking.setStatus(BookingStatus.CONFIRMED);
         return bookingMapper.toBookingDto(bookingRepository.save(booking));

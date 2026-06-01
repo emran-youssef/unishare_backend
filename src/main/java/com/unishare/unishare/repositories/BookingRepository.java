@@ -17,7 +17,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findByListing_Id(Long listingId);
 
     // overlap detection:
-
     @Query("""
     SELECT b FROM Booking b
     WHERE b.listing.id = :listingId

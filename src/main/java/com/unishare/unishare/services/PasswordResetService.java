@@ -48,7 +48,6 @@ public class PasswordResetService {
 
         tokenRepository.save(token);
         emailService.sendEmail(uniEmail, otp);
-
     }
 
     @Transactional
@@ -65,7 +64,7 @@ public class PasswordResetService {
         token.setUsed(true);
         tokenRepository.save(token);
 
-        user.setPasswordHash(newPassword);
+        user.setPasswordHash(passwordEncoder.encode(newPassword));
         userRepository.save(user);
     }
 
