@@ -7,6 +7,6 @@ public class EduEmailValidator implements ConstraintValidator<EduEmail, String> 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext constraintValidatorContext) {
         if(value == null  || value.isBlank()) return false;
-        return value.trim().toLowerCase().endsWith(".edu");
+        return value.trim().toLowerCase().contains(".edu");
     }
 }

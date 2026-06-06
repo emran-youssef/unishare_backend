@@ -77,15 +77,24 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-
+    // For frontend-react integration
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
+
+        // Only allow requests coming from React's dev server
         config.setAllowedOrigins(List.of("http://localhost:5173")); // React dev server
+
+        // Allow these HTTP methods
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+
+        // Allow all headers — including Authorization: Bearer <token>
         config.setAllowedHeaders(List.of("*"));
+
+        // Allow cookies and auth headers to be sent cross-origin
         config.setAllowCredentials(true);
 
+        // Apply these rules to every endpoint in the app
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
