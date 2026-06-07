@@ -109,7 +109,6 @@ public class AdminService {
         listing.setStatus(ListingStatus.INACTIVE);
         return listingMapper.toDto(listingRepository.save(listing));
     }
-`
     public ListingDto activateListing(Long listingId) {
         var listing = listingRepository.findById(listingId)
                 .orElseThrow(() -> new ListingNotFoundException("Listing not found"));
