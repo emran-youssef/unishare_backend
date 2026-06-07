@@ -55,6 +55,7 @@ public class ListingController {
                 listingService.getAllListings(category, condition, status, minPrice, maxPrice, pageable));
     }
 
+    @Transactional
     @GetMapping("/{id}")
     public ResponseEntity<ListingDto> getListingById(@PathVariable Long id) {
         return ResponseEntity.ok(listingService.getListingById(id));
