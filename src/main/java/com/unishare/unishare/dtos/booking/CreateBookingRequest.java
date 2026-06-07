@@ -21,6 +21,8 @@ public class CreateBookingRequest {
     @Future(message = "End date must be in the future")
     private LocalDate endDate;
 
+    private Long meetupLocationId;
+
 
 
 }

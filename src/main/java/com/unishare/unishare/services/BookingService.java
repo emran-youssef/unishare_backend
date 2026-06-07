@@ -3,7 +3,9 @@ package com.unishare.unishare.services;
 import com.unishare.unishare.dtos.booking.BookingDto;
 import com.unishare.unishare.dtos.booking.CreateBookingRequest;
 import com.unishare.unishare.entities.Booking;
+import com.unishare.unishare.entities.MeetUpLocation;
 import com.unishare.unishare.enums.BookingStatus;
+import com.unishare.unishare.enums.ListingStatus;
 import com.unishare.unishare.exceptions.Booking.BookingNotFoundException;
 import com.unishare.unishare.exceptions.Booking.BookingOverlapException;
 import com.unishare.unishare.exceptions.Listing.ListingNotFoundException;
@@ -20,6 +22,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +31,13 @@ import java.util.Optional;
 @AllArgsConstructor
 @Transactional
 public class BookingService {
+
+    private static final List<BookingStatus> CREATE_BLOCKING_STATUSES = List.of(
+            BookingStatus.PENDING,
+            BookingStatus.CONFIRMED
+    );
+
+    private static final List<BookingStatus> CONFIRM_BLOCKING_STATUSES = List.of(BookingStatus.CONFIRMED);
 
     private final BookingRepository bookingRepository;
     private BookingMapper bookingMapper;
@@ -53,21 +63,25 @@ public class BookingService {
         if(!request.getEndDate().isAfter(request.getStartDate()))
             throw new IllegalArgumentException("End date must be after start date");
 
-        // Overlap Detection - checking against confirmed booking only
-        var overlapping = bookingRepository.findOverlappingBookings(
+        ensureNoOverlappingBooking(
                 request.getListingId(),
                 request.getStartDate(),
                 request.getEndDate(),
-                BookingStatus.CONFIRMED
-                );
-
-        if(!overlapping.isEmpty())
-            throw new BookingOverlapException();
+                CREATE_BLOCKING_STATUSES,
+                null
+        );
 
         //calculate days of renting and the total price
         long days = ChronoUnit.DAYS.between(request.getStartDate(), request.getEndDate());
         BigDecimal totalPrice = listing.getPricePerDay().multiply(BigDecimal.valueOf(days));
 
+        //get the selected meetup location
+
+        MeetUpLocation location = null;
+        if (request.getMeetupLocationId() != null) {
+            location = meetupLocationRepository.findById(request.getMeetupLocationId())
+                    .orElseThrow(() -> new MeetupLocationNotFoundException(request.getMeetupLocationId()));
+        }
         var booking = Booking.builder()
                 .listing(listing)
                 .renter(renter)
@@ -75,6 +89,7 @@ public class BookingService {
                 .endDate(request.getEndDate())
                 .totalPrice(totalPrice)
                 .status(BookingStatus.PENDING)
+                .meetupLocation(location)
                 .build();
 
         var saved = bookingRepository.save(booking);
@@ -126,6 +141,7 @@ public class BookingService {
     public BookingDto confirmBooking(Long bookingId, Long requestingUserId) {
 
         var booking = getBooking(bookingId);
+        var listing = booking.getListing();
 
         boolean isOwner = booking.getListing().getOwner().getId().equals(requestingUserId);
         if (!isOwner)
@@ -134,12 +150,25 @@ public class BookingService {
         if (booking.getStatus() != BookingStatus.PENDING)
             throw new UnauthorizedActionException("Only PENDING bookings can be confirmed");
 
+        ensureNoOverlappingBooking(
+                booking.getListing().getId(),
+                booking.getStartDate(),
+                booking.getEndDate(),
+                CONFIRM_BLOCKING_STATUSES,
+                booking.getId()
+        );
+
         booking.setStatus(BookingStatus.CONFIRMED);
+        listing.setStatus(ListingStatus.RENTED);
+        listingRepository.save(listing);
+
         return bookingMapper.toBookingDto(bookingRepository.save(booking));
     }
 
+
     public BookingDto completeBooking(Long bookingId, Long requestingUserId) {
         var booking = getBooking(bookingId);
+        var listing = booking.getListing();
 
         boolean isOwner = booking.getListing().getOwner().getId().equals(requestingUserId);
         if (!isOwner) {
@@ -151,6 +180,8 @@ public class BookingService {
         }
 
         booking.setStatus(BookingStatus.COMPLETED);
+        listing.setStatus(ListingStatus.AVAILABLE);
+        listingRepository.save(listing);
         return bookingMapper.toBookingDto(bookingRepository.save(booking));
     }
 
@@ -180,11 +211,36 @@ public class BookingService {
         return bookingMapper.toBookingDto(bookingRepository.save(booking));
     }
 
-    // helper
+    // in the future, no endpoint for now
+    public Optional<Booking> getActiveBookingForListing(Long listingId, BookingStatus status){
+        return bookingRepository.findByListingIdAndStatus(listingId, BookingStatus.CONFIRMED);
+    }
+
+
+    // Helpers-------------------------:
     private Booking getBooking(long id){
         return bookingRepository.findById(id)
                 .orElseThrow(() -> new BookingNotFoundException(id));
     }
 
+    private void ensureNoOverlappingBooking(
+            Long listingId,
+            LocalDate startDate,
+            LocalDate endDate,
+            List<BookingStatus> blockingStatuses,
+            Long excludedBookingId) {
+
+        var overlapping = bookingRepository.findOverlappingBookings(
+                listingId,
+                startDate,
+                endDate,
+                blockingStatuses,
+                excludedBookingId
+        );
+
+        if (!overlapping.isEmpty()) {
+            throw new BookingOverlapException();
+        }
+    }
 
 }

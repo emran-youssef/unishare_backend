@@ -8,6 +8,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 public class ListingDto {
@@ -21,5 +22,7 @@ public class ListingDto {
     private ListingStatus status;
     private LocalDateTime createdAt;
     private UserDto owner;
+    private List<ListingImageDto> images;
+    private String availableFrom;
 
 }

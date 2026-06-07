@@ -49,13 +49,9 @@ public class PaymentService {
         // 5. Determine payment method
         boolean isOnline = request.getPaymentMethod() == PaymentMethod.ONLINE;
 
-        // 6. call the helper method createPayment tp build a payment record
+        // 6A. call the helper method createPayment tp build a payment record
         var payment = createPayment(booking, request, isOnline);
         var saved = paymentRepository.save(payment);
-
-        // 6. Both methods complete the booking
-        booking.setStatus(BookingStatus.COMPLETED);
-        bookingRepository.save(booking);
 
         return paymentMapper.toPaymentDto(saved);
 
