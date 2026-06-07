@@ -17,10 +17,13 @@ import com.unishare.unishare.repositories.BookingRepository;
 import com.unishare.unishare.repositories.ListingRepository;
 import com.unishare.unishare.repositories.PaymentRepository;
 import com.unishare.unishare.repositories.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
 
 @Service
 @AllArgsConstructor
@@ -35,37 +38,38 @@ public class AdminService {
     private BookingMapper bookingMapper;
 
 
-    public AdminStatsDto getStats(){
+    public AdminStatsDto getStats() {
         return AdminStatsDto.builder()
                 .totalUsers(userRepository.count())
-                .activeListings(listingRepository.count())
+                .totalListing(listingRepository.count())
                 .totalBookings(bookingRepository.count())
                 .activeListings(listingRepository.countByStatus(ListingStatus.AVAILABLE))
                 .pendingBookings(bookingRepository.countByStatus(BookingStatus.PENDING))
                 .completedBookings(bookingRepository.countByStatus(BookingStatus.COMPLETED))
-                .totalRevenue(paymentRepository.sumPaidAmount())
+                .totalRevenue(paymentRepository.sumPaidAmount() != null
+                        ? paymentRepository.sumPaidAmount()
+                        : BigDecimal.ZERO)
                 .build();
-
     }
 
-    public Page<UserDto> getAllUsers(Pageable pageable){
+    public Page<UserDto> getAllUsers(Pageable pageable) {
         return userRepository.findAll(pageable)
                 .map(user -> userMapper.toDto(user));
     }
 
-    public UserDto getUserById(Long id){
+    public UserDto getUserById(Long id) {
         return userRepository.findById(id)
                 .map(user -> userMapper.toDto(user))
-                .orElseThrow(()->new UserNotFoundException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
     }
 
-    public UserDto changeUserRole(Long adminId, Long targetUserId, Role newRole){
+    public UserDto changeUserRole(Long adminId, Long targetUserId, Role newRole) {
 
-        if(adminId.equals(targetUserId))
+        if (adminId.equals(targetUserId))
             throw new UnauthorizedActionException("You cannot change your own role");
 
         var user = userRepository.findById(targetUserId)
-                .orElseThrow(()-> new UserNotFoundException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         user.setRole(newRole);
         userRepository.save(user);
@@ -73,40 +77,39 @@ public class AdminService {
         return userMapper.toDto(user);
     }
 
-    public UserDto deactivateUser(Long adminId, Long userId){
+    public UserDto deactivateUser(Long adminId, Long userId) {
 
-        if(adminId.equals(userId))
+        if (adminId.equals(userId))
             throw new UnauthorizedActionException("You cannot deactivate your own account");
 
-        var user = userRepository.findById(userId).orElseThrow(()-> new UserNotFoundException("User not found"));
+        var user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         user.setIsActive(false);
         return userMapper.toDto(userRepository.save(user));
-
     }
 
-    public UserDto activateUser(Long id){
-
-        var user  = userRepository.findById(id)
-                .orElseThrow(()-> new UserNotFoundException("User not found"));
+    public UserDto activateUser(Long id) {
+        var user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
         user.setIsActive(true);
         return userMapper.toDto(userRepository.save(user));
     }
 
-    public Page<ListingDto> getAllListings(Pageable pageable){
+    @Transactional
+    public Page<ListingDto> getAllListings(Pageable pageable) {
         return listingRepository.findAll(pageable)
                 .map(listing -> listingMapper.toDto(listing));
     }
 
-    public ListingDto deactivateListing(Long listingId){
+    public ListingDto deactivateListing(Long listingId) {
         var listing = listingRepository.findById(listingId)
                 .orElseThrow(() -> new ListingNotFoundException("Listing not found"));
 
         listing.setStatus(ListingStatus.INACTIVE);
         return listingMapper.toDto(listingRepository.save(listing));
-
     }
-
+`
     public ListingDto activateListing(Long listingId) {
         var listing = listingRepository.findById(listingId)
                 .orElseThrow(() -> new ListingNotFoundException("Listing not found"));
@@ -115,9 +118,9 @@ public class AdminService {
         return listingMapper.toDto(listingRepository.save(listing));
     }
 
+    @Transactional
     public Page<BookingDto> getAllBookings(Pageable pageable) {
         return bookingRepository.findAll(pageable)
                 .map(bookingMapper::toBookingDto);
     }
-
 }
