@@ -1,6 +1,7 @@
 package com.unishare.unishare.entities;
 
 import com.unishare.unishare.enums.BookingStatus;
+import com.unishare.unishare.enums.PaymentMethod;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -37,6 +38,10 @@ public class Booking {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private BookingStatus status = BookingStatus.PENDING;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "payment_method", nullable = true)
+    private PaymentMethod paymentMethod;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;

@@ -1,7 +1,6 @@
 package com.unishare.unishare.repositories;
 
 import com.unishare.unishare.entities.Listing;
-import com.unishare.unishare.entities.MeetUpLocation;
 import com.unishare.unishare.enums.ItemCondition;
 import com.unishare.unishare.enums.ListingCategory;
 import com.unishare.unishare.enums.ListingStatus;

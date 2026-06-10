@@ -4,6 +4,7 @@ import com.unishare.unishare.dtos.listing.ListingDto;
 import com.unishare.unishare.dtos.meetUpLocation.MeetUpLocationDto;
 import com.unishare.unishare.dtos.user.UserDto;
 import com.unishare.unishare.enums.BookingStatus;
+import com.unishare.unishare.enums.PaymentMethod;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -21,6 +22,7 @@ public class BookingDto {
     private ListingDto listing;
     private UserDto renter;
     private MeetUpLocationDto meetupLocation;
+    private PaymentMethod paymentMethod;
     private LocalDateTime createdAt;
 
 }

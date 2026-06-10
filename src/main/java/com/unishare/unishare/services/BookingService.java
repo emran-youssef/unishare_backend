@@ -90,6 +90,7 @@ public class BookingService {
                 .totalPrice(totalPrice)
                 .status(BookingStatus.PENDING)
                 .meetupLocation(location)
+                .paymentMethod(request.getPaymentMethod())
                 .build();
 
         var saved = bookingRepository.save(booking);

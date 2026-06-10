@@ -1,6 +1,7 @@
 package com.unishare.unishare.dtos.booking;
 
 
+import com.unishare.unishare.enums.PaymentMethod;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -22,6 +23,9 @@ public class CreateBookingRequest {
     private LocalDate endDate;
 
     private Long meetupLocationId;
+
+    @NotNull(message = "Payment method is required")
+    private PaymentMethod paymentMethod;
 
 
 

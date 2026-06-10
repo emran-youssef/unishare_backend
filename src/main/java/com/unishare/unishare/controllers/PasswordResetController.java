@@ -18,10 +18,9 @@ public class PasswordResetController {
     private final PasswordResetService passwordResetService;
 
     @PostMapping("/forgot-password")
-    public ResponseEntity<?> forgotPassword(
-            @RequestParam String uniEmail) {
+    public ResponseEntity<Void> forgotPassword(@RequestParam String uniEmail) {
         passwordResetService.requestReset(uniEmail);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body("A code was sent to: "+ uniEmail);
+        return ResponseEntity.noContent().build();  // 204
     }
 
     @PostMapping("/reset-password")
@@ -31,7 +30,7 @@ public class PasswordResetController {
                 request.getUniversityEmail(),
                 request.getOtp(),
                 request.getNewPassword());
-        return ResponseEntity.status(HttpStatus.OK).body("Message: password reset successfully");
+        return ResponseEntity.noContent().build();  //204
     }
 
 
