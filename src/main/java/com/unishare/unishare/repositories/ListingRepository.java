@@ -27,6 +27,8 @@ public interface ListingRepository extends JpaRepository<Listing,Long> {
           AND (:status   IS NULL OR l.status   = :status)
           AND (:minPrice IS NULL OR l.pricePerDay >= :minPrice)
           AND (:maxPrice IS NULL OR l.pricePerDay <= :maxPrice)
+          AND (:keyword  IS NULL OR LOWER(l.title) LIKE LOWER(CONCAT('%', :keyword, '%'))
+                                               OR LOWER(l.description) LIKE LOWER(CONCAT('%', :keyword, '%')))
     """)
     Page<Listing> searchListings(
             @Param("category") ListingCategory category,
@@ -34,6 +36,7 @@ public interface ListingRepository extends JpaRepository<Listing,Long> {
             @Param("status") ListingStatus status,
             @Param("minPrice") BigDecimal minPrice,
             @Param("maxPrice") BigDecimal maxPrice,
+            @Param("keyword") String keyword,
             Pageable pageable
     );
 

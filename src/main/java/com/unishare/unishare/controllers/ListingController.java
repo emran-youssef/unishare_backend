@@ -44,6 +44,7 @@ public class ListingController {
     @GetMapping()
     @Transactional
     public ResponseEntity<Page<ListingDto>> getAllListings(
+            @RequestParam(required = false) String keyword,
             @RequestParam(required = false) ListingCategory category,
             @RequestParam(required = false) ItemCondition condition,
             @RequestParam(required = false) ListingStatus status,
@@ -52,7 +53,7 @@ public class ListingController {
             Pageable pageable)
     {
         return ResponseEntity.ok(
-                listingService.getAllListings(category, condition, status, minPrice, maxPrice, pageable));
+                listingService.getAllListings(keyword, category, condition, status, minPrice, maxPrice, pageable));
     }
 
     @Transactional

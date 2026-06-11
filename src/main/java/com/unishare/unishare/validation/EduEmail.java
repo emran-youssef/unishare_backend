@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)                     //when this annotation apply -runtime
 public @interface EduEmail {
 
-    String message() default "University email must be a valid .edu email address";
+    String message() default "Only ZUJ student emails are allowed (@std-zuj.edu.jo)";
     Class<?> [] groups() default {};
-    Class<?extends Payload>[] payload() default {};
+    Class<?extends Payload>[] payload() default {   };
 }

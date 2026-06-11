@@ -56,6 +56,7 @@ public class ListingService {
 
     @Transactional
     public Page<ListingDto> getAllListings(
+            String keyword,
             ListingCategory category,
             ItemCondition condition,
             ListingStatus status,
@@ -64,8 +65,9 @@ public class ListingService {
             Pageable pageable)
     {
 
+        String kw = (keyword == null || keyword.isBlank()) ? null : keyword.trim();
         return listingRepository
-                .searchListings(category, condition, status, minPrice, maxPrice, pageable)
+                .searchListings(category, condition, status, minPrice, maxPrice, kw, pageable)
                 .map(listingMapper::toDto);
     }
 

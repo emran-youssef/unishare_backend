@@ -52,7 +52,12 @@ public class AdminService {
                 .build();
     }
 
-    public Page<UserDto> getAllUsers(Pageable pageable) {
+    public Page<UserDto> getAllUsers(String name, Pageable pageable) {
+        if (name != null && !name.isBlank()) {
+            return userRepository.findByFullNameContainingIgnoreCase(name, pageable)
+                    .map(user -> userMapper.toDto(user));
+        }
+
         return userRepository.findAll(pageable)
                 .map(user -> userMapper.toDto(user));
     }

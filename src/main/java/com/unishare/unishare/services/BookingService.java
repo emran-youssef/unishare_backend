@@ -4,8 +4,11 @@ import com.unishare.unishare.dtos.booking.BookingDto;
 import com.unishare.unishare.dtos.booking.CreateBookingRequest;
 import com.unishare.unishare.entities.Booking;
 import com.unishare.unishare.entities.MeetUpLocation;
+import com.unishare.unishare.entities.Payment;
 import com.unishare.unishare.enums.BookingStatus;
 import com.unishare.unishare.enums.ListingStatus;
+import com.unishare.unishare.enums.PaymentMethod;
+import com.unishare.unishare.enums.PaymentStatus;
 import com.unishare.unishare.exceptions.Booking.BookingNotFoundException;
 import com.unishare.unishare.exceptions.Booking.BookingOverlapException;
 import com.unishare.unishare.exceptions.Listing.ListingNotFoundException;
@@ -151,8 +154,11 @@ public class BookingService {
         if (booking.getStatus() != BookingStatus.PENDING)
             throw new UnauthorizedActionException("Only PENDING bookings can be confirmed");
 
+        if(listing.getStatus() == ListingStatus.RENTED)
+            throw new IllegalStateException("The listing is currently rented out. You can confirm once the active booking is completed");
+
         ensureNoOverlappingBooking(
-                booking.getListing().getId(),
+                listing.getId(),
                 booking.getStartDate(),
                 booking.getEndDate(),
                 CONFIRM_BLOCKING_STATUSES,
@@ -166,18 +172,25 @@ public class BookingService {
         return bookingMapper.toBookingDto(bookingRepository.save(booking));
     }
 
-
+    // Owner complete the booking
     public BookingDto completeBooking(Long bookingId, Long requestingUserId) {
         var booking = getBooking(bookingId);
         var listing = booking.getListing();
 
-        boolean isOwner = booking.getListing().getOwner().getId().equals(requestingUserId);
+        boolean isOwner = listing.getOwner().getId().equals(requestingUserId);
         if (!isOwner) {
             throw new UnauthorizedActionException("Only the listing owner can complete a booking");
         }
 
         if (booking.getStatus() != BookingStatus.CONFIRMED) {
             throw new UnauthorizedActionException("Only CONFIRMED bookings can be completed");
+        }
+
+        if (booking.getPaymentMethod() == PaymentMethod.ONLINE) {
+            Payment payment = booking.getPayment();
+            if (payment == null || payment.getStatus() != PaymentStatus.PAID)
+                throw new IllegalStateException(
+                        "Cannot complete booking: online payment has not been settled yet");
         }
 
         booking.setStatus(BookingStatus.COMPLETED);
