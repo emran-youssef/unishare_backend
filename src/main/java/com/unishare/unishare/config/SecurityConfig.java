@@ -83,7 +83,10 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         // Only allow requests coming from React's dev server
-        config.setAllowedOrigins(List.of("http://localhost:5173")); // React dev server
+        config.setAllowedOrigins(List.of(
+                "http://localhost:5173",
+                "https://unishare-forntend.netlify.app"
+        ));
 
         // Allow these HTTP methods
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));

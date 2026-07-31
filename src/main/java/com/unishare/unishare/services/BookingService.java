@@ -122,9 +122,9 @@ public class BookingService {
         return bookingMapper.toBookingDto(booking);
     }
 
-    public BookingDto cancelBooking(Long bookinId, Long requestingUserId)
+    public BookingDto cancelBooking(Long bookingId, Long requestingUserId)
     {
-        var booking = getBooking(bookinId);
+        var booking = getBooking(bookingId);
 
         boolean isRenter = booking.getRenter().getId().equals(requestingUserId);
         boolean isOwner = booking.getListing().getOwner().getId().equals(requestingUserId);
