@@ -9,7 +9,6 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private AuthService authService;
-    private PasswordEncoder passwordEncoder;
 
     @PostMapping("/register")
     public ResponseEntity<JwtResponse> register(
@@ -38,10 +36,5 @@ public class AuthController {
     ){
 
         return ResponseEntity.ok(authService.login(request));
-    }
-
-    @GetMapping("/test-hash")
-    public String testHash() {
-        return passwordEncoder.encode("00000000");
     }
 }

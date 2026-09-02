@@ -13,4 +13,10 @@ spring:
 server:
   port: ${PORT:8080}
 
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
+
 websiteUrl: http://unishare.com
