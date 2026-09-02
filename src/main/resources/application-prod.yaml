@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+
+  mail:
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+
+server:
+  port: ${PORT:8080}
+
+websiteUrl: http://unishare.com
