@@ -85,7 +85,7 @@ public class SecurityConfig {
         // Allow requests from the React dev server and the deployed production frontend
         config.setAllowedOrigins(List.of(
                 "http://localhost:5173",
-                "https://unisharefrontendorg-production.up.railway.app"
+                "https://unishare.up.railway.app"
         ));
 
         // Allow these HTTP methods
