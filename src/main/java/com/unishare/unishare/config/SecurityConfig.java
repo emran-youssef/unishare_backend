@@ -3,6 +3,7 @@ package com.unishare.unishare.config;
 import com.unishare.unishare.filters.JwtAuthenticationFilter;
 import com.unishare.unishare.services.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,6 +21,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Configuration
@@ -30,6 +32,12 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final UserDetailsServiceImpl userDetailsService;
+
+    // Comma-separated list of allowed frontend origins. Defaults to the React dev
+    // server; override in prod via the CORS_ALLOWED_ORIGINS env var, e.g.
+    // CORS_ALLOWED_ORIGINS=http://localhost:5173,https://your-frontend.up.railway.app
+    @Value("${cors.allowed-origins:http://localhost:5173}")
+    private String allowedOrigins;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -82,8 +90,13 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        // Only allow requests coming from React's dev server
-        config.setAllowedOrigins(List.of("http://localhost:5173"));
+        // Allowed origins come from the `allowedOrigins` field above (defaults to the
+        // React dev server, overridable via CORS_ALLOWED_ORIGINS)
+        List<String> origins = Arrays.stream(allowedOrigins.split(","))
+                .map(String::trim)
+                .filter(origin -> !origin.isEmpty())
+                .toList();
+        config.setAllowedOrigins(origins);
 
         // Allow these HTTP methods
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
