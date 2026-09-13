@@ -142,6 +142,25 @@ public class BookingService {
 
     }
 
+    // Owner rejects a PENDING booking request, distinct from a CANCELLED booking.
+    // Rejecting never touches Listing.status (a PENDING booking never set it in the
+    // first place) and immediately frees the date range for new requests, since
+    // REJECTED is excluded from CREATE_BLOCKING_STATUSES.
+    public BookingDto rejectBooking(Long bookingId, Long requestingUserId) {
+        var booking = getBooking(bookingId);
+
+        boolean isOwner = booking.getListing().getOwner().getId().equals(requestingUserId);
+        if (!isOwner)
+            throw new UnauthorizedActionException("Only the listing owner can reject a booking");
+
+        if (booking.getStatus() != BookingStatus.PENDING)
+            throw new UnauthorizedActionException("Only PENDING bookings can be rejected");
+
+        booking.setStatus(BookingStatus.REJECTED);
+
+        return bookingMapper.toBookingDto(bookingRepository.save(booking));
+    }
+
     public BookingDto confirmBooking(Long bookingId, Long requestingUserId) {
 
         var booking = getBooking(bookingId);

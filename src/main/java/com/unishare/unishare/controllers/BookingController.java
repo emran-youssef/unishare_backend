@@ -70,6 +70,14 @@ public class BookingController {
         return ResponseEntity.ok(bookingService.cancelBooking(id, userId));
     }
 
+    @PutMapping("/{id}/reject")
+    public ResponseEntity<BookingDto> rejectBooking(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        Long userId = userService.getIdByEmail(userDetails.getUsername());   //Username = uniEmail
+        return ResponseEntity.ok(bookingService.rejectBooking(id, userId));
+    }
+
     @PutMapping("/{id}/confirm")
     public ResponseEntity<BookingDto> confirmBooking(
             @PathVariable Long id,
