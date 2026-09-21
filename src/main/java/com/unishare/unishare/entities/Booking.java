@@ -54,10 +54,6 @@ public class Booking {
     @JoinColumn(name = "listing_id")
     private Listing listing;
 
-    // Booking-Payment Relationship: one booking has exactly one payment
-    @OneToOne(mappedBy = "booking")
-    private Payment payment;
-
     @OneToMany(mappedBy = "booking", fetch = FetchType.LAZY)
     private List<Review> reviews = new ArrayList<>();
 

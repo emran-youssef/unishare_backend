@@ -2,6 +2,9 @@ package com.unishare.unishare.repositories;
 
 import com.unishare.unishare.entities.Booking;
 import com.unishare.unishare.enums.BookingStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -12,7 +15,16 @@ import java.util.Optional;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, Long> {
+
+    // everything BookingDto needs (listing + its owner, renter, meetup location) is fetched in the same query
+    @EntityGraph(attributePaths = {"listing", "listing.owner", "renter", "meetupLocation"})
     List<Booking> findByRenter_Id(Long renterId);
+
+    // used by the admin bookings endpoint
+    @Override
+    @EntityGraph(attributePaths = {"listing", "listing.owner", "renter", "meetupLocation"})
+    Page<Booking> findAll(Pageable pageable);
+
     List<Booking> findByListing_Id(Long listingId);
 
     // Overlap detection for date ranges where endDate is treated as the return/check-out date.
@@ -34,6 +46,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     long countByStatus(BookingStatus status);
 
+    @EntityGraph(attributePaths = {"listing", "listing.owner", "renter", "meetupLocation"})
     List<Booking>  findByListing_Owner_id(Long ownerId);
 
     Optional<Booking> findByListingIdAndStatus(Long listingId, BookingStatus status);

@@ -19,6 +19,7 @@ import com.unishare.unishare.mappers.BookingMapper;
 import com.unishare.unishare.repositories.BookingRepository;
 import com.unishare.unishare.repositories.ListingRepository;
 import com.unishare.unishare.repositories.MeetupLocationRepository;
+import com.unishare.unishare.repositories.PaymentRepository;
 import com.unishare.unishare.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -47,6 +48,7 @@ public class BookingService {
     private final UserRepository userRepository;
     private final ListingRepository listingRepository;
     private final MeetupLocationRepository meetupLocationRepository;
+    private final PaymentRepository paymentRepository;
 
 
     //create booking
@@ -206,7 +208,7 @@ public class BookingService {
         }
 
         if (booking.getPaymentMethod() == PaymentMethod.ONLINE) {
-            Payment payment = booking.getPayment();
+            Payment payment = paymentRepository.findByBooking_Id(bookingId).orElse(null);
             if (payment == null || payment.getStatus() != PaymentStatus.PAID)
                 throw new IllegalStateException(
                         "Cannot complete booking: online payment has not been settled yet");
