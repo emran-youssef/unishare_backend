@@ -6,6 +6,7 @@ import com.unishare.unishare.enums.ListingCategory;
 import com.unishare.unishare.enums.ListingStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -18,8 +19,14 @@ import java.util.List;
 public interface ListingRepository extends JpaRepository<Listing,Long> {
 
     // owner is the object field — Spring Data traverses owner.id via underscore
+    @EntityGraph(attributePaths = "owner")
     Page<Listing> findByOwner_Id(Long ownerId, Pageable pageable);
 
+    @Override
+    @EntityGraph(attributePaths = "owner")
+    Page<Listing> findAll(Pageable pageable);
+
+    @EntityGraph(attributePaths = "owner")
     @Query("""
         SELECT l FROM Listing l
         WHERE (:category IS NULL OR l.category = :category)

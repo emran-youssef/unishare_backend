@@ -8,14 +8,14 @@ COPY mvnw pom.xml ./
 RUN chmod +x mvnw && ./mvnw dependency:go-offline -B
 
 # Now copy the rest and build
-COPY src ./src
+COPY src ./srcprod
 RUN ./mvnw clean package -DskipTests -B
 
 # ---- Run stage ----
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 
-# Render free tier = 512MB RAM, so cap the JVM heap
+# Railway = limited RAM, so cap the JVM heap
 ENV JAVA_OPTS="-Xmx400m -Xss512k -XX:MaxMetaspaceSize=200m"
 
 COPY --from=build /app/target/*.jar app.jar
