@@ -47,6 +47,17 @@ public interface ListingRepository extends JpaRepository<Listing,Long> {
             Pageable pageable
     );
 
+    // every listing the user has sent or received a chat message about — owner is fetched in the same query
+    @EntityGraph(attributePaths = "owner")
+    @Query("""
+        SELECT l FROM Listing l
+        WHERE l.id IN (
+            SELECT m.listing.id FROM ChatMessage m
+            WHERE m.sender.id = :userId OR m.reciever.id = :userId
+        )
+    """)
+    List<Listing> findConversationListingsByUserId(@Param("userId") Long userId);
+
     long countByStatus(ListingStatus status);
 
 

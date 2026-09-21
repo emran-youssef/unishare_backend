@@ -2,6 +2,7 @@ package com.unishare.unishare.repositories;
 
 import com.unishare.unishare.entities.Review;
 import com.unishare.unishare.enums.ReviewType;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -13,9 +14,11 @@ import java.util.Optional;
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     //check all reviews for a listing, used on the listing details page
+    @EntityGraph(attributePaths = {"reviewer", "reviewee"})
     List<Review> findByListingId(Long listingId);
 
     // fetch all reviews received by a user — used on the user profile page
+    @EntityGraph(attributePaths = {"reviewer", "reviewee"})
     List<Review> findByRevieweeId(Long revieweeId);
 
     // check if a review of this type already exists for this booking — prevents duplicate reviews

@@ -86,13 +86,10 @@ public class ChatService {
                 .orElseThrow(() -> new UserNotFoundException(
                         "User not found: " + callerEmail));
 
-        // get all listing IDs where this user has messages
-        return chatMessageRepository
-                .findDistinctListingIdForUser(caller.getId())
+        // load all listings where this user has messages in a single query
+        return listingRepository
+                .findConversationListingsByUserId(caller.getId())
                 .stream()
-                .map(listingId -> listingRepository.findById(listingId)
-                        .orElseThrow(() -> new ListingNotFoundException(
-                                "Listing not found: " + listingId)))
                 .map(listingMapper::toDto)
                 .toList();
     }

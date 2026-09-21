@@ -88,6 +88,7 @@ public class ReviewService {
     }
 
 
+    @Transactional
     public List<ReviewDto> getReviewsByListingId(Long listingId) {
         return reviewRepository.findByListingId(listingId)
                 .stream()
@@ -95,6 +96,7 @@ public class ReviewService {
                 .toList();
     }
 
+    @Transactional
     public List<ReviewDto> getReviewsByUser(Long userId) {
         return reviewRepository.findByRevieweeId(userId)
                 .stream()
