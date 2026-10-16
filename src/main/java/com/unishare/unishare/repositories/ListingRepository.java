@@ -18,7 +18,6 @@ import java.util.List;
 @Repository
 public interface ListingRepository extends JpaRepository<Listing,Long> {
 
-    // owner is the object field — Spring Data traverses owner.id via underscore
     @EntityGraph(attributePaths = "owner")
     Page<Listing> findByOwner_Id(Long ownerId, Pageable pageable);
 
